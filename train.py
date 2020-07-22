@@ -2,25 +2,44 @@ from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
-import numpy as np
 import pandas as pd
 
-
-def load_csv(file_name):
-    return pd.read_csv(file_name, header = 0, encoding='ISO-8859-1')
-df = load_csv('train.csv')
-
-feature_names = df.columns.tolist()
+df = pd.read_csv('train.csv', header = 0, encoding='ISO-8859-1')
 X = df.drop('Difficulty', 1)
 Y = df['Difficulty']
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.1, random_state=0)
+
+regressor = RandomForestClassifier(n_estimators=1000, random_state=0)
+
+def train_baseline_model():
+    X_train_baseline = X_train.filter(['FreqStandard', 'LenChar','PoS'], axis=1)
+    X_test_baseline = X_test.filter(['FreqStandard', 'LenChar', 'PoS'], axis=1)
+    regressor.fit(X_train_baseline, y_train)
+    y_pred = regressor.predict(X_test_baseline)
+    return y_pred
 
 
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
+def train_model():
+    regressor.fit(X_train, y_train)
+    y_pred = regressor.predict(X_test)
+    return y_pred
 
-regressor = RandomForestClassifier(n_estimators=5000, random_state=0)
-regressor.fit(X_train, y_train)
-y_pred = regressor.predict(X_test)
+
+def model_classification_report(y_test, y_pred):
+    return classification_report(y_test, y_pred)
 
 
-print(classification_report(y_test,y_pred))
-print(accuracy_score(y_test, y_pred))
+def model_accuracy(y_test, y_pred):
+    result = 'Accuracy score: ' + str(accuracy_score(y_test, y_pred))
+    return result
+
+
+if __name__ == "__main__":
+    print('\nBaseline model results (trained on 3 features):')
+    y_pred = train_baseline_model()
+    print(model_classification_report(y_test, y_pred))
+    print(model_accuracy(y_test, y_pred))
+    print('\nModel results (trained on all features):')
+    y_pred = train_model()
+    print(model_classification_report(y_test, y_pred))
+    print(model_accuracy(y_test, y_pred))
