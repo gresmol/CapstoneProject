@@ -1,4 +1,4 @@
-from sklearn.ensemble import RandomForestClassifier
+from sklearn import svm
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 import pandas as pd
@@ -8,19 +8,20 @@ X = df.drop('Difficulty', 1)
 Y = df['Difficulty']
 X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.1, random_state=0)
 
-regressor = RandomForestClassifier(n_estimators=1000, random_state=0)
+clf = svm.SVC(kernel='linear', C = 1.0)
+
 
 def train_baseline_model():
     X_train_baseline = X_train.filter(['FreqStandard', 'LenChar','PoS'], axis=1)
     X_test_baseline = X_test.filter(['FreqStandard', 'LenChar', 'PoS'], axis=1)
-    regressor.fit(X_train_baseline, y_train)
-    y_pred = regressor.predict(X_test_baseline)
+    clf.fit(X_train_baseline, y_train)
+    y_pred = clf.predict(X_test_baseline)
     return y_pred
 
 
 def train_model():
-    regressor.fit(X_train, y_train)
-    y_pred = regressor.predict(X_test)
+    clf.fit(X_train, y_train)
+    y_pred = clf.predict(X_test)
     return y_pred
 
 
