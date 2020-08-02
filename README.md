@@ -5,6 +5,8 @@ In this project several classifiers for complex word identification for Swedish 
 
 The dataset used in the training is CWI dataset for Swedish: it consists of more than 4,000 Swedish lemmas with annotated 39 linguistic features. All these features are already normalised and turned to their numerical representation.
 
+The dataset: https://github.com/gresmol/CWIdataset
+
 Further reading about the dataset: https://pdfs.semanticscholar.org/8728/f63b7a08b1c9668bef101ba36a7950aa2432.pdf?_ga=2.200084270.1262024743.1596358064-547328618.1595177024
 
 #Classification 
